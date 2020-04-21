@@ -1,0 +1,137 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Video S3 Import
+
+Parameters:
+  ORG:
+    Type: 'String'
+    Description: 'Your ARC organization ID'
+  ENV:
+    Type: 'String'
+    Description: 'sandbox | prod'
+  ArcToken:
+    Type: 'String'
+    Description: 'Your ARC API token'
+    AllowedValues: ['sandbox', 'prod']
+  VideoExpirationInDays: 
+    Type: 'Number'
+    Description: 'How many days until the video is deleted from the bucket?'
+
+#
+# CloudFormation resources
+#
+Resources:
+
+  #
+  # Role that our Lambda will assume to provide access to other AWS resources
+  #
+  IamRoleLambdaExecution:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+
+  #
+  # Create a Policy and attach it to our Lambda Role.
+  #
+  IamPolicyLambdaExecution:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: IamPolicyLambdaExecution
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - ec2:CreateNetworkInterface
+              - ec2:DescribeNetworkInterfaces
+              - ec2:DeleteNetworkInterface
+              - ec2:DetachNetworkInterface
+              - ec2:AttachNetworkInterface
+              - ec2:ModifyNetworkInterfaceAttribute
+              - ec2:ResetNetworkInterfaceAttribute
+            Resource: '*'
+      Roles:
+        - Ref: IamRoleLambdaExecution
+
+  #
+  # Lambda function
+  #
+  ArcVideoCenterIngestLambda:
+    Type: AWS::Serverless::Function
+    DependsOn: IamPolicyLambdaExecution
+    Properties:
+      Role: !GetAtt IamRoleLambdaExecution.Arn
+      Description: 'Imports videos into the video CMS from a dedicated folder structure'
+      MemorySize: 128
+      Timeout: 10
+      ReservedConcurrentExecutions: 10
+      Runtime: nodejs10.x
+      CodeUri: ./
+      Handler: index.handler
+      Tags:
+        App: ARC Video Center Ingest
+
+  #
+  # Lambda Execution Permission
+  #
+  ArcVideoCenterIngestLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: ArcVideoCenterIngestLambda
+    Properties:
+      FunctionName: !Ref ArcVideoCenterIngestLambda
+      Principal: s3.amazonaws.com
+      Action: lambda:InvokeFunction
+      SourceAccount:
+        Ref: AWS::AccountId
+
+  #
+  # S3 Bucket with Lambda trigger
+  #
+  ArcVideoCenterIngestBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub 'arc-video-center-ingest-${ORG}-${ENV}'
+      AccessControl: 'Private'
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: 's3:ObjectCreated:*'
+            Function: !GetAtt ArcVideoCenterIngestLambda.Arn
+      LifecycleConfiguration:
+        Rules: 
+          - Id: 'ExpireAfter'
+            Status: Enabled
+            ExpirationInDays: !Ref VideoExpirationInDays
+
+#
+# Outputs
+#
+Outputs:
+  ArcVideoCenterIngestLambda:
+    Description: Lambda Function Name
+    Value: !Ref ArcVideoCenterIngestLambda
+  ArcVideoCenterIngestLambdaArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt ArcVideoCenterIngestLambda.Arn
+  ArcVideoCenterIngestBucket:
+    Description: S3 Bucket
+    Value: !Ref ArcVideoCenterIngestBucket

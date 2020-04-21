@@ -1,0 +1,39 @@
+{
+  "type": "video",
+  "version": "0.8.0",
+  "additional_properties": {
+    "platform": "desktop"
+  },
+  "credits": {},
+  "language": "en",
+  "promo_items": {
+    "basic": {
+      "additional_properties": {
+        "published": false
+      },
+      "credits": {},
+      "type": "image",
+      "version": "0.8.0"
+    }
+  },
+  "revision": {
+    "published": false
+  },
+  "taxonomy": {
+    "primary_section": {
+      "referent": {
+        "type": "section"
+      },
+      "type": "reference"
+    },
+    "sections": [
+      {
+        "referent": {
+          "type": "section"
+        },
+        "type": "reference"
+      }
+    ]
+  },
+  "websites": {}
+}
