@@ -17,6 +17,12 @@ Parameters:
   VideoExpirationInDays: 
     Type: 'Number'
     Description: 'How many days until the video is deleted from the bucket?'
+  SshPublicKey:
+    Type: 'String'
+    Description: 'Your SFTP SSH public key'
+
+Conditions:
+  UseSFTP: !Not [!Equals [!Ref SshPublicKey, '']]
 
 #
 # CloudFormation resources
@@ -127,6 +133,58 @@ Resources:
             Status: Enabled
             ExpirationInDays: !Ref VideoExpirationInDays
 
+  #
+  # SFTP
+  #
+  IamRoleSFTPExecution:
+    Type: AWS::IAM::Role
+    Condition: UseSFTP
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - transfer.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+  
+  IamPolicySFTPExecution:
+    Type: AWS::IAM::Policy
+    Condition: UseSFTP
+    Properties:
+      PolicyName: IamPolicySFTPExecution
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: '*'
+      Roles:
+        - Ref: IamRoleSFTPExecution
+  
+  SFTP:
+    Type: AWS::Transfer::Server
+    Condition: UseSFTP
+    Properties:
+      EndpointType: PUBLIC
+      IdentityProviderType: SERVICE_MANAGED
+  
+  FTPUser:
+    Type : AWS::Transfer::User
+    Condition: UseSFTP
+    Properties :
+      HomeDirectory: !Sub '/${ArcVideoCenterIngestBucket}'
+      HomeDirectoryType: PATH
+      Role: !GetAtt IamRoleSFTPExecution.Arn
+      ServerId: !GetAtt SFTP.ServerId
+      SshPublicKeys: 
+        - !Sub 'ssh-rsa ${SshPublicKey}'
+      UserName: !Sub 'arc-vc-ingest-${ENV}'
+
 #
 # Outputs
 #
@@ -140,3 +198,7 @@ Outputs:
   ArcVideoCenterIngestBucket:
     Description: S3 Bucket
     Value: !Ref ArcVideoCenterIngestBucket
+  SFTP:
+    Condition: UseSFTP
+    Description: SFTP
+    Value: !Ref SFTP

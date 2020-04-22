@@ -1,6 +1,8 @@
 # arc-video-center-ingest
 Ingest videos into ARC Video Center via SFTP &amp; S3 uploads
 
+![Architecture](Architecture.png)
+
 # How to deploy and host this on your AWS account?
 
 ## Fork this GitHub repo
@@ -15,6 +17,7 @@ S3_BUCKET=
 ORG=
 ENV=prod
 ARC_TOKEN=
+SSH_PUBLIC_KEY=
 VIDEO_EXPIRATION_IN_DAYS=1
 ```
 
@@ -27,6 +30,7 @@ S3_BUCKET=
 ORG=
 ENV=sandbox
 ARC_TOKEN=
+SSH_PUBLIC_KEY=
 VIDEO_EXPIRATION_IN_DAYS=1
 ```
 
@@ -36,6 +40,7 @@ Here is what each variable is for:
  - S3_BUCKET -> Bucket where the lambda artifacts are uploaded and used by CloudFormation.  Create an S3 bucket manually and add the bucket name here
  - ORG -> Your ARC organization ID
  - ARC_TOKEN -> Create an ARC Access Token here: https://<ORG>.arcpublishing.com/developer/access/tokens or here: https://sandbox.<ORG>.arcpublishing.com/developer/access/tokens.  ** Don't check this into GitHub.
+ - SSH_PUBLIC_KEY -> Optional.  Adding this will create an SFTP endpoint.  [Creating SSH Keys](https://docs.aws.amazon.com/transfer/latest/userguide/key-management.html#sshkeygen)  Don't include the `ssh-rsa` prefix here.  Just the key.
  - VIDEO_EXPIRATION_IN_DAYS -> How many days before the video uploaded to S3 should be removed?
 
  ## Deploy the stack

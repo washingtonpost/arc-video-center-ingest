@@ -38,7 +38,8 @@ aws cloudformation deploy \
 ArcToken=${ARC_TOKEN} \
 ORG=${ORG} \
 ENV=${ENV} \
-VideoExpirationInDays=${VIDEO_EXPIRATION_IN_DAYS}
+VideoExpirationInDays=${VIDEO_EXPIRATION_IN_DAYS} \
+SshPublicKey=${SSH_PUBLIC_KEY}
 
 # Show the CloudFormation output params.
 aws cloudformation describe-stacks \
