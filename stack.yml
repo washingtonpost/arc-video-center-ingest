@@ -10,10 +10,10 @@ Parameters:
   ENV:
     Type: 'String'
     Description: 'sandbox | prod'
+    AllowedValues: ['sandbox', 'prod']
   ArcToken:
     Type: 'String'
     Description: 'Your ARC API token'
-    AllowedValues: ['sandbox', 'prod']
   VideoExpirationInDays: 
     Type: 'Number'
     Description: 'How many days until the video is deleted from the bucket?'
@@ -88,6 +88,11 @@ Resources:
       Runtime: nodejs10.x
       CodeUri: ./
       Handler: index.handler
+      Environment:
+        Variables:
+          ORG: !Ref ORG
+          ENV: !Ref ENV
+          ArcToken: !Ref ArcToken
       Tags:
         App: ARC Video Center Ingest
 

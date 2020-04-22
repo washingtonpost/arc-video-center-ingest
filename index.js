@@ -18,7 +18,7 @@ const functions = {};
  * @return {Promise<*|void>}
  */
 functions.handler = async (event, context, callback) => {
-
+  console.log(JSON.stringify(event));
   try {
 
     // Get the record
