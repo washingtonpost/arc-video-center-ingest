@@ -65,17 +65,9 @@ Resources:
           - Effect: Allow
             Action:
               - s3:*
-            Resource: '*'
-          - Effect: Allow
-            Action:
-              - ec2:CreateNetworkInterface
-              - ec2:DescribeNetworkInterfaces
-              - ec2:DeleteNetworkInterface
-              - ec2:DetachNetworkInterface
-              - ec2:AttachNetworkInterface
-              - ec2:ModifyNetworkInterfaceAttribute
-              - ec2:ResetNetworkInterfaceAttribute
-            Resource: '*'
+            Resource:
+              - !Sub 'arn:aws:s3:::arc-video-center-ingest-${ORG}-${ENV}'
+              - !Sub 'arn:aws:s3:::arc-video-center-ingest-${ORG}-${ENV}/*'
       Roles:
         - Ref: IamRoleLambdaExecution
 
@@ -162,7 +154,9 @@ Resources:
           - Effect: Allow
             Action:
               - s3:*
-            Resource: '*'
+            Resource:
+              - !Sub 'arn:aws:s3:::arc-video-center-ingest-${ORG}-${ENV}'
+              - !Sub 'arn:aws:s3:::arc-video-center-ingest-${ORG}-${ENV}/*'
       Roles:
         - Ref: IamRoleSFTPExecution
   
