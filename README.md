@@ -37,7 +37,7 @@ Here is what each variable is for:
  - ROLE_ARN -> [CloudFormation service role](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-servicerole.html)
  - S3_BUCKET -> Bucket where the lambda artifacts are uploaded and used by CloudFormation.  Create an S3 bucket manually and add the bucket name here.
  - ORG -> Your ARC organization ID
- - ARC_TOKEN -> Create an ARC Access Token here: https://\<ORG\>.arcpublishing.com/developer/access/tokens or here: https://sandbox.\<ORG\>.arcpublishing.com/developer/access/tokens.  ** Don't check this into GitHub.
+ - ARC_TOKEN -> Create an ARC Access Token here: https://{ORG}.arcpublishing.com/developer/access/tokens or here: https://sandbox.{ORG}.arcpublishing.com/developer/access/tokens.  ** Don't check this into GitHub.
  - SSH_PUBLIC_KEY -> Optional.  Adding this will create an SFTP endpoint.  Here is how you [Create your SSH Keys](https://docs.aws.amazon.com/transfer/latest/userguide/key-management.html#sshkeygen)  Don't include the `ssh-rsa` prefix here.  Just the key.
  - VIDEO_EXPIRATION_IN_DAYS -> How many days before the video uploaded to S3 should be removed?
 
@@ -60,8 +60,8 @@ This stack creates a new S3 bucket.
 When you add a video to the S3 bucket or SFTP endpoint, it is uploaded to Video Center via our ANS import endpoint.
 
 The ANS import endpoint is:
- - Sandbox: https://api.sandbox.\<ORG\>.arcpublishing.com/goldfish/video/v2/import/ans
- - Production: https://api.\<ORG\>.arcpublishing.com/goldfish/video/v2/import/ans
+ - Sandbox: https://api.sandbox.{ORG}.arcpublishing.com/goldfish/video/v2/import/ans
+ - Production: https://api.{ORG}.arcpublishing.com/goldfish/video/v2/import/ans
 
 For any given video, pieces of this ANS document can vary to suit the needs of the video. 
 
