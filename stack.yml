@@ -91,6 +91,7 @@ Resources:
           ORG: !Ref ORG
           ENV: !Ref ENV
           ArcToken: !Ref ArcToken
+          VideoExpirationInDays: !Ref VideoExpirationInDays
       Tags:
         App: ARC Video Center Ingest
 
