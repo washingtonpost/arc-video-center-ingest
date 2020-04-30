@@ -2,6 +2,7 @@
 const importer = require('./lib/importer');
 const metadata = require('./lib/metadata');
 const utils = require('./lib/utils');
+const s3 = require('./lib/s3');
 
 // Constants
 const VIDEO_MATCH_REGEX = '(.+/)*[^/]+.(?:mp4|mov|mxf)';
@@ -34,6 +35,7 @@ functions.handler = async (event, context, callback) => {
     const defaultMetadataMatcher = key.match(DEFAULT_METADATA_MATCH_REGEX);
     if (!videoMatcher && !defaultMetadataMatcher) {
       console.log('Skipping as not handled');
+      await s3.addTags(bucket, key, [{ Key: 'ArcExpire', Value: 'True' }]);
       callback(null, { status: 'success' });
       return;
     }
@@ -46,9 +48,13 @@ functions.handler = async (event, context, callback) => {
     if (defaultMetadataMatcher) {
       console.log(`Expiring default metadata for key [${key}]`);
       metadata.expireDefaultMetadata(key, executionContext);
+      await s3.addTags(bucket, key, [{ Key: 'ArcExpire', Value: 'False' }]);
       callback(null, { status: 'success' });
       return;
     }
+
+    // Set the media tag.
+    await s3.addTags(bucket, key, [{ Key: 'ArcExpire', Value: 'True' }]);
 
     // Import the file
     await importer.importFile(bucket, key, executionContext);

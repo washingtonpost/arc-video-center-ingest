@@ -125,6 +125,9 @@ Resources:
           - Id: 'ExpireAfter'
             Status: Enabled
             ExpirationInDays: !Ref VideoExpirationInDays
+            TagFilters:
+              - Key: ArcExpire
+                Value: 'True'     
 
   #
   # SFTP
