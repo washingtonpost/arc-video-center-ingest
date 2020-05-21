@@ -1,0 +1,27 @@
+{
+  "S3Keys":
+  {
+    "invalidKeys": [
+      "root/level1/level2/level3/level_mov/20200519105012.json",
+      "arc-goldfish-appledaily-videos/bulk-import/sandbox/TWAD/micromovie/20200519105012.webm",
+      "root/level1/level2/mp4/20200519105012",
+      "root/level1/level2/mfx/20200519105012.jpeg",
+      "root/level1/level2/level3/level_.mov/20200519105012.json",
+      "root/level1/level2/.mp4/20200519105012",
+      "root/level1/level2/.mfx/20200519105012.jpeg",
+      "arc-goldfish-appledaily-videos",
+      "arc-goldfish-appledaily-videos/bulk-import/sandbox/TWAD/micromovie/20200519105144.json"
+    ],
+    "validKeys":[
+      "arc-goldfish-appledaily-videos/bulk-import/sandbox/TWAD/micromovie/20200519105012.mp4",
+      "root/level1/level2/level3/20200519105012.mov",
+      "root/level1/level2/level3/20200519105012.mxf",
+      "root/level1/level2/level3mp4/20200519105012.mov",
+      "root/level1/level2/level3mov/20200519105012.mp4",
+      "root/level1/level2/level3mfx/20200519105012.mxf",
+      "root/level1/level2/level3.mp4/20200519105012.mov",
+      "root/level1/level2/level3.mov/20200519105012.mp4",
+      "root/level1/level2/level3.mfx/20200519105012.mxf"
+    ]
+  }
+}

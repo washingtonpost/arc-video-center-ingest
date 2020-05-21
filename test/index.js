@@ -2,6 +2,7 @@ const mocha = require('mocha');
 const proxyquireStrict = require('proxyquire')
   .noCallThru();
 const sinon = require('sinon');
+const assert = require('chai').assert;
 
 const describe = mocha.describe;
 
@@ -64,5 +65,28 @@ describe('index', async () => {
       importerMock.verify();
     });
   });
+  describe('regex', () => {
+    it('should only match keys(strings) ending with mp4/mov/mxf', async () => {
+      const {invalidKeys,validKeys} = require('./data/testRegexForS3Keys.json').S3Keys;
+      const {VIDEO_MATCH_REGEX} = require('../index');
 
+      validKeys.forEach((key) => {
+        try{
+          assert.isNotNull(key.match(VIDEO_MATCH_REGEX));
+        } catch (e) {
+          e.message = "KEY: " + key + " should NOT be null, this should be a valid key";
+          throw e;
+        }
+      });
+
+      invalidKeys.forEach((key) => {
+        try{
+          assert.isNull(key.match(VIDEO_MATCH_REGEX));
+        } catch (e) {
+          e.message = "KEY: " + key + " should BE null, this should be and INVALID key";
+          throw e;
+        }
+      });
+    });
+  });
 });
