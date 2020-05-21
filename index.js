@@ -5,7 +5,7 @@ const utils = require('./lib/utils');
 const s3 = require('./lib/s3');
 
 // Constants
-const VIDEO_MATCH_REGEX = '(.+/)*[^/]+.(?:mp4|mov|mxf)';
+const VIDEO_MATCH_REGEX = '(.+/)*[^/]+.(?:.mp4|.mov|.mxf)$';
 const DEFAULT_METADATA_MATCH_REGEX = '(.+/)*_default.json';
 
 const functions = {};
@@ -68,4 +68,5 @@ functions.handler = async (event, context, callback) => {
   callback(null, { status: 'success' });
 };
 
+functions.VIDEO_MATCH_REGEX = VIDEO_MATCH_REGEX;
 module.exports = functions;
