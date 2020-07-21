@@ -27,7 +27,7 @@ functions.handler = async (event, context, callback) => {
 
     // Get the bucket and key
     const bucket = record.s3.bucket.name;
-    const key = record.s3.object.key;
+    const key = decodeURIComponent(record.s3.object.key.replace(/\+/g, ' '))
     console.log(`Received event for [${bucket}/${key}]`);
 
     // Validate that we want to handle this key. We'll accept video files and default metadata files
