@@ -5,7 +5,7 @@ const utils = require('./lib/utils');
 const s3 = require('./lib/s3');
 
 // Constants
-const VIDEO_MATCH_REGEX = '(.+/)*[^/]+.(?:.mp4|.mov|.mxf)$';
+const VIDEO_MATCH_REGEX = '(.+/)*[^/]+.(?:.mp4|.mov|.mxf|.m4v|.mpg|.mpg2)$';
 const DEFAULT_METADATA_MATCH_REGEX = '(.+/)*_default.json';
 
 const functions = {};
